@@ -1,0 +1,12 @@
+.DS_Store
+Updater.jar
+hs_err_pid54271.log
+hs_err_pid55911.log
+hs_err_pid58135.log
+hs_err_pid61672.log
+jre/
+mods/
+pokemon-wilds.jar
+pokemon-wilds.json
+settings.txt
+version.txt
