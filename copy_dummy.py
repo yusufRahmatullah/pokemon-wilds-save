@@ -36,15 +36,19 @@ def copy_files(x, y):
 
 def main():
     args = sys.argv
-    if len(args) != 3:
+    if len(args) < 3:
         print(f'Usage: python3 {args[0]} <x> <y>')
         sys.exit(1)
 
     x = args[1]
     y = args[2]
-    print(f'Your input x: {x}, y: {y}')
+    force = False
+    if len(args) >= 4 and args[3].lower() == 'force':
+        force = True
+    print(f'Your input x: {x}, y: {y}, force: {force}\n')
 
-    validate_input(x, y)
+    if not force:
+        validate_input(x, y)
     copy_files(x, y)
 
 
