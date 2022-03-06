@@ -37,6 +37,47 @@ class Argument:
         pass
 
 
+class RefreshArgument(Argument):
+    default_target = {
+        'main': '0,1'
+    }
+    valid_locs = {
+        'main': '-1,0',
+        'regi': '0,-1'
+    }
+
+    def __init__(self, command, params) -> None:
+        super().__init__(command, params)
+        self._init_loc()
+        self._init_target()
+
+    def perform(self):
+        src_loc = self.valid_locs[self.loc]
+        src_paths = generate_file_path(src_loc, DUMMY_DIR)
+
+        dest_loc = self.target
+        dest_paths = generate_file_path(dest_loc, MAP_DIR)
+
+        for src, dest in zip(src_paths, dest_paths):
+            print(f'will copy file from "{src}" to "{dest}"')
+            copy_file(src, dest)
+
+    def _init_loc(self):
+        loc = self.params[0].lower()
+        if loc not in self.valid_locs:
+            error(f'Location should be one of: {" | ".join(self.valid_locs)}')
+        self.loc = loc
+
+    def _init_target(self):
+        if len(self.params) == 1:
+            self.target = self.default_target[self.loc]
+            return
+        self.target = self.params[1]
+
+    def _validate(self):
+        if len(self.params) == 0:
+            error('Params should be exist')
+
 class UpdateArgument(Argument):
     valid_locs = {
         'main': '-1,0',
@@ -52,7 +93,7 @@ class UpdateArgument(Argument):
         src_paths = generate_file_path(src_loc, MAP_DIR)
 
         dest_loc = self.valid_locs[self.loc]
-        dest_paths = generate_file_path(src_loc, DUMMY_DIR)
+        dest_paths = generate_file_path(dest_loc, DUMMY_DIR)
 
         for src, dest in zip(src_paths, dest_paths):
             print(f'will copy file from "{src}" to "{dest}"')
@@ -82,6 +123,8 @@ def parse_args() -> Argument:
     params = argv[2:]
     if command == 'update':
         return UpdateArgument(command, params)
+    elif command == 'refresh':
+        return RefreshArgument(command, params)
     else:
         return Argument(command, params)
 
